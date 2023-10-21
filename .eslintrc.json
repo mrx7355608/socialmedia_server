@@ -11,6 +11,7 @@
     "rules": {
         "linebreak-style": "off",
         "import/extensions": "off",
+        "comma-dangle": "off",
         "quotes": "off"
     }
 }
