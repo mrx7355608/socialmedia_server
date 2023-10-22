@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "start": "node ./src/server.js",
-    "dev": "nodemon ./src/server.js"
+    "dev": "nodemon ./src/server.js",
+    "test:watch": "jest --detectOpenHandles --watch --verbose"
   },
   "devDependencies": {
     "eslint": "^7.32.0 || ^8.2.0",
@@ -23,6 +24,7 @@
     "express-session": "^1.17.3",
     "helmet": "^7.0.0",
     "hpp": "^0.2.3",
+    "jest": "^29.7.0",
     "joi": "^17.11.0",
     "mongoose": "^7.6.3",
     "morgan": "^1.10.0",
