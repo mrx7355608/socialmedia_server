@@ -1,7 +1,11 @@
-import mockUserDB from "../../__tests__/mocks/mock_user.data";
+import mockUserDB from "../../__tests__/mocks/mock_user.data.js";
+import mockEmailServices from "../../__tests__/mocks/mock_email.services.js";
 import AuthService from "./auth.services";
 
-const authService = AuthService({ usersDB: mockUserDB });
+const authService = AuthService({
+  usersDB: mockUserDB,
+  emailServices: mockEmailServices,
+});
 
 describe("Auth service", () => {
   const data = {

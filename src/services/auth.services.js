@@ -1,7 +1,7 @@
-import { badRequestError } from "./error.services.js";
+import { badRequestError, internalError } from "./error.services.js";
 import signupValidator from "../validators/auth.js";
 
-const AuthService = ({ usersDB }) => {
+const AuthService = ({ usersDB, emailServices }) => {
   const signup = async (signupData) => {
     // Validate user data
     signupValidator(signupData);
@@ -12,9 +12,15 @@ const AuthService = ({ usersDB }) => {
       return badRequestError("Email is already registered");
     }
 
+    // Send verification email
+    const isEmailSent = await emailServices.sendVerificationEmail();
+    if (isEmailSent === false) {
+      return internalError("Could not send verification email");
+    }
+
     // Create a new user
-    const newUser = await usersDB.insert(signupData);
-    return newUser;
+    await usersDB.insert(signupData);
+    return null;
   };
 
   return { signup };
