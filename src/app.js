@@ -5,8 +5,8 @@ import morgan from "morgan";
 import express from "express";
 import passport from "passport";
 import sessions from "express-session";
-import connectMongo from "connect-mongodb-session";
 import passportStrategySetup from "./passport.js";
+import connectMongo from "connect-mongodb-session";
 import { catch404, globalErrorHandler } from "./utils/errorHandlers.js";
 
 const app = express();
