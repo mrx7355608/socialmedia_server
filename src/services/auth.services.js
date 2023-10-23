@@ -1,5 +1,6 @@
 import { badRequestError, internalError } from "./error.services.js";
 import signupValidator from "../validators/auth.js";
+import generateToken from "../utils/generateToken.js";
 
 const AuthService = ({ usersDB, emailServices }) => {
   const signup = async (signupData) => {
@@ -13,7 +14,8 @@ const AuthService = ({ usersDB, emailServices }) => {
     }
 
     // Send verification email
-    const isEmailSent = await emailServices.sendVerificationEmail();
+    const token = generateToken();
+    const isEmailSent = await emailServices.sendVerificationEmail(token);
     if (isEmailSent === false) {
       return internalError("Could not send verification email");
     }

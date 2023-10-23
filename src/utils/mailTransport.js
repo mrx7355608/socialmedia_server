@@ -1,0 +1,15 @@
+import nodemailer from "nodemailer";
+
+const createMailTransport = () => {
+  const transporter = nodemailer.createTransport({
+    host: process.env.MAIL_HOST,
+    port: process.env.MAIL_PORT,
+    auth: {
+      user: process.env.MAIL_USER,
+      pass: process.env.MAIL_PASS,
+    },
+  });
+  return transporter;
+};
+
+export default createMailTransport;
