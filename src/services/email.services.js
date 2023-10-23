@@ -1,5 +1,3 @@
-import nodemaler from "nodemailer";
-
 const EmailServices = ({ transporter }) => {
   const sendVerificationEmail = async (token, receiverEmail) => {
     const message = {
@@ -9,12 +7,7 @@ const EmailServices = ({ transporter }) => {
       text: "Please verify your email",
       html: `<a href=${process.env.FRONTEND_URL}/auth/verify-account?t=${token}>Verify</a>`,
     };
-    try {
-      await transporter.sendMail(message);
-      return true;
-    } catch (err) {
-      return false;
-    }
+    await transporter.sendMail(message);
   };
 
   const sendResetPasswordEmail = async () => {};

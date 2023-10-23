@@ -1,8 +1,7 @@
-import { badRequestError, internalError } from "./error.services.js";
+import { badRequestError } from "./error.services.js";
 import signupValidator from "../validators/auth.js";
-import generateToken from "../utils/generateToken.js";
 
-const AuthService = ({ usersDB, emailServices }) => {
+const AuthService = ({ usersDB, emailServices, tokenServices }) => {
   const signup = async (signupData) => {
     // Validate user data
     signupValidator(signupData);
@@ -13,15 +12,12 @@ const AuthService = ({ usersDB, emailServices }) => {
       return badRequestError("Email is already registered");
     }
 
-    // Send verification email
-    const token = generateToken();
-    const isEmailSent = await emailServices.sendVerificationEmail(token);
-    if (isEmailSent === false) {
-      return internalError("Could not send verification email");
-    }
-
     // Create a new user
-    await usersDB.insert(signupData);
+    const newUser = await usersDB.insert(signupData);
+
+    // Send verification email
+    const token = await tokenServices.createNewToken("account-verification", String(newUser.id));
+    await emailServices.sendVerificationEmail(token.token, newUser.email);
     return null;
   };
 
