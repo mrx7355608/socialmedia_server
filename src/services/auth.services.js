@@ -3,7 +3,10 @@ import signupValidator from "../validators/auth.js";
 
 const AuthService = ({ usersDB, emailServices, tokenServices }) => {
   // 1) SIGNUP
-  const signup = async (signupData) => {
+  const signup = async (data) => {
+    // eslint-disable-next-line
+    const signupData = filterUnwantedFields(data)
+
     // Validate user data
     signupValidator(signupData);
 
@@ -22,7 +25,25 @@ const AuthService = ({ usersDB, emailServices, tokenServices }) => {
     return null;
   };
 
-  // VERIFY EMAIL
+  // UTILITY FUNCTIONS
+  function filterUnwantedFields(obj) {
+    const allowedFields = [
+      "firstname",
+      "lastname",
+      "email",
+      "password",
+      "confirmPassword"
+    ];
+    Object.keys(obj).forEach((key) => {
+      if (!allowedFields.includes(key)) {
+        // eslint-disable-next-line
+        delete obj[key];
+      }
+    });
+
+    return obj;
+  }
+
   return { signup };
 };
 
