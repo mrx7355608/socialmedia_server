@@ -1,24 +1,12 @@
-import tokensDB from "../data/token.data.js";
-import generateToken from "../utils/generateToken.js";
+import jwt from "jsonwebtoken";
 
-const listOneToken = async (type, userID) => {
-  const token = await tokensDB.findOne(type, userID);
-  return token;
+const JWTServices = () => {
+  const jwtSecret = process.env.JWT_SECRET;
+
+  const generateToken = (payload) => jwt.sign(payload, jwtSecret);
+  const verifyToken = (token) => jwt.verify(token, jwtSecret);
+
+  return { generateToken, verifyToken };
 };
 
-const createNewToken = async (type, userID) => {
-  const data = {
-    token: generateToken(),
-    type,
-    userID
-  };
-  const newToken = await tokensDB.insert(data);
-  return newToken;
-};
-
-const tokenServices = {
-  createNewToken,
-  listOneToken
-};
-
-export default tokenServices;
+export default JWTServices;

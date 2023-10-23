@@ -2,6 +2,7 @@ import { badRequestError } from "./error.services.js";
 import signupValidator from "../validators/auth.js";
 
 const AuthService = ({ usersDB, emailServices, tokenServices }) => {
+  // 1) SIGNUP
   const signup = async (signupData) => {
     // Validate user data
     signupValidator(signupData);
@@ -16,11 +17,12 @@ const AuthService = ({ usersDB, emailServices, tokenServices }) => {
     const newUser = await usersDB.insert(signupData);
 
     // Send verification email
-    const token = await tokenServices.createNewToken("account-verification", String(newUser.id));
-    await emailServices.sendVerificationEmail(token.token, newUser.email);
+    const token = tokenServices.generateToken({ userID: newUser.id });
+    await emailServices.sendVerificationEmail(token, newUser.email);
     return null;
   };
 
+  // VERIFY EMAIL
   return { signup };
 };
 
