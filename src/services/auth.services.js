@@ -21,6 +21,7 @@ const AuthService = ({ usersDB, emailServices, tokenServices }) => {
       ...signupData,
       profile_picture: process.env.DEFAULT_PROFILE_PICTURE,
       cover_picture: process.env.DEFAULT_COVER_PICTURE,
+      role: "user",
     };
     const newUser = await usersDB.insert(userDataObject);
 
