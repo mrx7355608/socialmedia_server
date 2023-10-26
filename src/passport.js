@@ -7,7 +7,7 @@ export default function passportStrategySetup() {
     new Strategy({ usernameField: "email" }, async (email, password, done) => {
       try {
         const user = await usersDB.findByEmail(email);
-        if (user === false) {
+        if (!user) {
           return done(null, false);
         }
 
