@@ -5,7 +5,7 @@ const AuthService = ({ usersDB, emailServices, tokenServices }) => {
   // 1) SIGNUP
   const signup = async (data) => {
     // eslint-disable-next-line
-    const signupData = filterUnwantedFields(data)
+    const signupData = filterUnwantedFields(data);
 
     // Validate user data
     signupValidator(signupData);
@@ -17,7 +17,12 @@ const AuthService = ({ usersDB, emailServices, tokenServices }) => {
     }
 
     // Create a new user
-    const newUser = await usersDB.insert(signupData);
+    const userDataObject = {
+      ...signupData,
+      profile_picture: process.env.DEFAULT_PROFILE_PICTURE,
+      cover_picture: process.env.DEFAULT_COVER_PICTURE,
+    };
+    const newUser = await usersDB.insert(userDataObject);
 
     // Send verification email
     const token = tokenServices.generateToken({ userID: newUser.id });
@@ -32,7 +37,7 @@ const AuthService = ({ usersDB, emailServices, tokenServices }) => {
       "lastname",
       "email",
       "password",
-      "confirmPassword"
+      "confirm_password",
     ];
     Object.keys(obj).forEach((key) => {
       if (!allowedFields.includes(key)) {

@@ -1,5 +1,5 @@
-import joi from "joi/lib";
-import ApiError from "../utils/ApiError";
+import joi from "joi";
+import ApiError from "../utils/ApiError.js";
 
 /* eslint-disable newline-per-chained-call */
 const signupSchema = joi.object({
@@ -37,7 +37,7 @@ const signupSchema = joi.object({
     "string.max": "Password cannot be longer than 30 characters",
     "string.base": "Password can only be text",
   }),
-  confirm_password: joi.valid(joi.ref("password")).messages({
+  confirm_password: joi.valid(joi.ref("password")).required().messages({
     "any.only": "Passwords do not match",
     "any.required": "Confirm your password please",
   }),

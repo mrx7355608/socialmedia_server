@@ -2,12 +2,13 @@ import passport from "passport";
 import AuthServices from "../services/auth.services.js";
 import EmailServices from "../services/email.services.js";
 import usersDB from "../data/user.data.js";
-import tokenServices from "../services/token.services.js";
+import TokenServices from "../services/token.services.js";
+import createMailTransport from "../utils/mailTransport.js";
 
 const authServices = AuthServices({
   usersDB,
-  emailServices: EmailServices(),
-  tokenServices
+  emailServices: EmailServices({ transporter: createMailTransport() }),
+  tokenServices: TokenServices()
 });
 
 const postSignup = async (req, res, next) => {
