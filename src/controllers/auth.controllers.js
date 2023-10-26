@@ -3,12 +3,11 @@ import AuthServices from "../services/auth.services.js";
 import EmailServices from "../services/email.services.js";
 import usersDB from "../data/user.data.js";
 import TokenServices from "../services/token.services.js";
-import createMailTransport from "../utils/mailTransport.js";
 
 const authServices = AuthServices({
   usersDB,
-  emailServices: EmailServices({ transporter: createMailTransport() }),
-  tokenServices: TokenServices()
+  emailServices: EmailServices(),
+  tokenServices: TokenServices(),
 });
 
 const postSignup = async (req, res, next) => {
@@ -16,7 +15,7 @@ const postSignup = async (req, res, next) => {
     const data = req.body;
     await authServices.signup(data);
     return res.status(200).json({
-      message: `A verification email has been sent to ${data.email}`
+      message: `A verification email has been sent to ${data.email}`,
     });
   } catch (err) {
     return next(err);
@@ -30,20 +29,22 @@ const postLogin = async (req, res, next) => {
     if (user === false) {
       return res.status(404).json({
         ok: false,
-        message: "Account not found"
+        message: "Account not found",
       });
     }
     if (info) {
       return res.status(400).json({
         ok: false,
-        message: info.message
+        message: info.message,
       });
     }
 
-    req.logIn(user, () => res.status(200).json({
-      ok: true,
-      message: "Login successfull",
-    }));
+    req.logIn(user, () =>
+      res.status(200).json({
+        ok: true,
+        message: "Login successfull",
+      })
+    );
   })(req, res, next);
 };
 
@@ -52,7 +53,7 @@ const postLogout = async (req, res, next) => {
     if (err) return next(next);
     return res.status(200).json({
       ok: true,
-      message: "Logout successfull"
+      message: "Logout successfull",
     });
   });
 };
@@ -60,7 +61,7 @@ const postLogout = async (req, res, next) => {
 const authControllers = {
   postSignup,
   postLogin,
-  postLogout
+  postLogout,
 };
 
 export default authControllers;
