@@ -43,6 +43,20 @@ const signupSchema = joi.object({
   }),
 });
 
+const resetPasswordSchema = joi.object({
+  password: joi.string().min(8).max(30).required().messages({
+    "any.required": "Password is required",
+    "string.empty": "Password cannot be empty",
+    "string.min": "Password should be 8 characters long atleast",
+    "string.max": "Password cannot be longer than 30 characters",
+    "string.base": "Password can only be text",
+  }),
+  confirm_password: joi.valid(joi.ref("password")).required().messages({
+    "any.only": "Passwords do not match",
+    "any.required": "Confirm your password please",
+  }),
+});
+
 const signupValidator = (data) => {
   const { error } = signupSchema.validate(data);
   if (error) {
@@ -50,4 +64,11 @@ const signupValidator = (data) => {
   }
 };
 
-export default signupValidator;
+const resetPasswordValidator = (data) => {
+  const { error } = signupSchema.validate(data);
+  if (error) {
+    throw new ApiError(error.message, 400);
+  }
+};
+
+export { signupValidator, resetPasswordValidator };
