@@ -65,7 +65,7 @@ const signupValidator = (data) => {
 };
 
 const resetPasswordValidator = (data) => {
-  const { error } = signupSchema.validate(data);
+  const { error } = resetPasswordSchema.validate(data);
   if (error) {
     throw new ApiError(error.message, 400);
   }
