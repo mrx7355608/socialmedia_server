@@ -16,7 +16,18 @@ const EmailServices = () => {
     await transporter.sendMail(message);
   };
 
-  const sendResetPasswordEmail = async () => {};
+  const sendResetPasswordEmail = async (token, receiverEmail) => {
+    const message = {
+      from: "mrx7355608@gmail.com",
+      to: receiverEmail,
+      subject: "Password Reset",
+      html: `<div>
+      <p> Click the link below to reset your password. The link will expire in 5 minutes</p>
+      <a href=${process.env.FRONTEND_URL}/auth/reset-password?t=${token}>Verify</a>
+      </div>`,
+    };
+    await transporter.sendMail(message);
+  };
 
   return {
     sendVerificationEmail,
