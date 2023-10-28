@@ -40,6 +40,7 @@ const postLogin = async (req, res, next) => {
     }
 
     req.logIn(user, () =>
+      // eslint-disable-next-line
       res.status(200).json({
         ok: true,
         message: "Login successfull",
@@ -58,10 +59,63 @@ const postLogout = async (req, res, next) => {
   });
 };
 
+const patchVerifyEmail = async (req, res, next) => {
+  try {
+    const token = req.query.t;
+    await authServices.verifyEmail(token);
+    return res.status(200).json({
+      message: "Account verified successfully",
+    });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+const postRequestVerificatioEmail = async (req, res, next) => {
+  try {
+    const { user } = req;
+    await authServices.requestVerificationEmail(user);
+    return res.status(200).json({
+      message: `A verification email has been sent to ${user.email}`,
+    });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+const postForgotPassword = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    await authServices.forgotPassword(email);
+    return res.status(200).json({
+      message: `A forgot password email has been sent to ${email}`,
+    });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+const patchResetPassword = async (req, res, next) => {
+  try {
+    const token = req.query.t;
+    const data = req.body; // New passwords
+    await authServices.resetPassword(token, data);
+    return res.status(200).json({
+      message: "Password has been reset successfully",
+    });
+  } catch (err) {
+    return next(err);
+  }
+};
+
 const authControllers = {
   postSignup,
   postLogin,
   postLogout,
+  patchVerifyEmail,
+  postRequestVerificatioEmail,
+  postForgotPassword,
+  patchResetPassword,
 };
 
 export default authControllers;

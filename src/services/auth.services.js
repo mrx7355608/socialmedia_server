@@ -115,7 +115,7 @@ const AuthService = ({ usersDB, emailServices }) => {
       payload = await tokenServices.verifyToken(token);
     } catch (error) {
       if (error.name === "TokenExpiredError") {
-        return forbiddenError("Verification token has expired");
+        return forbiddenError("Token has expired");
       }
       if (error.name === "JsonWebTokenError") {
         return forbiddenError("Invalid token");
