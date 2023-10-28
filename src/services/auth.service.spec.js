@@ -1,3 +1,4 @@
+import "dotenv/config";
 import mockUserDB from "../../__tests__/mocks/mock_user.data.js";
 import mockEmailServices from "../../__tests__/mocks/mock_email.services.js";
 import AuthService from "./auth.services";
@@ -150,14 +151,14 @@ describe("Auth service", () => {
       try {
         await authService.verifyEmail();
       } catch (err) {
-        expect(err.message).toBe("Verification token is missing");
+        expect(err.message).toBe("Token is missing");
       }
     });
     test("should return error if token is invalid", async () => {
       try {
         await authService.verifyEmail("asdfasdfasd");
       } catch (err) {
-        expect(err.message).toBe("l;ol token is missing");
+        expect(err.message).toBe("Invalid token");
       }
     });
     test("should return error if token is expired", async () => {
@@ -166,7 +167,24 @@ describe("Auth service", () => {
           "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiI2NTM5ZTMzNjkxNzM5NDBlYjI5ODQzNGQiLCJpYXQiOjE2OTgyOTI1MzUsImV4cCI6MTY5ODI5MjgzNX0.LHVf0g7RgOq9XSBtZ7VcBUaoF05oIvpNkCRVQSOpVM0"
         );
       } catch (err) {
-        expect(err.message).toBe("l;ol token is missing");
+        expect(err.message).toBe("Token has expired");
+      }
+    });
+  });
+  describe("Request Verification Email", () => {
+    test("should throw error if the user is already verified", async () => {
+      try {
+        const mockUserObject = {
+          firstname: "Asad",
+          lastname: "Khan",
+          email: "mirza.galib@poetryhub.com",
+          password: "some-hashed-password",
+          role: "user",
+          isVerified: true,
+        };
+        await authService.requestVerificationEmail(mockUserObject);
+      } catch (err) {
+        expect(err.message).toBe("You are already a verified user");
       }
     });
   });

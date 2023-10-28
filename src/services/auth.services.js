@@ -6,8 +6,11 @@ import {
   notFoundError,
 } from "./error.services.js";
 import { signupValidator, resetPasswordValidator } from "../validators/auth.js";
+import TokenService from "./token.services.js";
 
-const AuthService = ({ usersDB, emailServices, tokenServices }) => {
+const AuthService = ({ usersDB, emailServices }) => {
+  const tokenServices = TokenService();
+
   // 1) SIGNUP
   const signup = async (data) => {
     // eslint-disable-next-line
@@ -40,7 +43,7 @@ const AuthService = ({ usersDB, emailServices, tokenServices }) => {
   // VERIFY EMAIL
   const verifyEmail = async (token) => {
     if (!token) {
-      return forbiddenError("Verification token is missing");
+      return forbiddenError("Token is missing");
     }
     try {
       const payload = await tokenServices.verifyToken(token);
@@ -55,7 +58,7 @@ const AuthService = ({ usersDB, emailServices, tokenServices }) => {
       return null;
     } catch (error) {
       if (error.name === "TokenExpiredError") {
-        return forbiddenError("Verification token has expired");
+        return forbiddenError("Token has expired");
       }
       if (error.name === "JsonWebTokenError") {
         return forbiddenError("Invalid token");
@@ -81,7 +84,7 @@ const AuthService = ({ usersDB, emailServices, tokenServices }) => {
   const forgotPassword = async (email) => {
     // Check if the email is provied and valid
     if (!email) {
-      return badRequestError("Please enter your email");
+      return badRequestError("Email is missing");
     }
     if (!validator.isEmail(email)) {
       return badRequestError("Invalid email");
@@ -122,15 +125,12 @@ const AuthService = ({ usersDB, emailServices, tokenServices }) => {
 
     const { userID } = payload;
     const user = await usersDB.findById(userID);
-
     // Check if user exist (extra safety check :p)
     if (!user) {
       return notFoundError("User not found");
     }
-
     // Valdiate passwords
     resetPasswordValidator(data);
-
     // Update password
     await usersDB.update(userID, { password: data.password });
     return null;
