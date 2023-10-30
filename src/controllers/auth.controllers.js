@@ -108,6 +108,40 @@ const patchResetPassword = async (req, res, next) => {
   }
 };
 
+// eslint-disable-next-line
+const postLoginAsGuest = async (req, res, next) => {
+  try {
+    const guestAccount = await authServices.createGuestAccount();
+    // eslint-disable-next-line
+    passport.authenticate("local", (err, user, info) => {
+      if (err) return next(err);
+      if (user === false) {
+        return res.status(404).json({
+          ok: false,
+          message: "Account not found",
+        });
+      }
+      if (info) {
+        return res.status(400).json({
+          ok: false,
+          message: info.message,
+        });
+      }
+
+      req.logIn(user, () =>
+        // eslint-disable-next-line
+        res.status(200).json({
+          ok: true,
+          message: "Login successfull",
+          data: guestAccount
+        })
+      );
+    })(req, res, next);
+  } catch (err) {
+    return next(err);
+  }
+};
+
 const authControllers = {
   postSignup,
   postLogin,
@@ -116,6 +150,7 @@ const authControllers = {
   postRequestVerificatioEmail,
   postForgotPassword,
   patchResetPassword,
+  postLoginAsGuest
 };
 
 export default authControllers;

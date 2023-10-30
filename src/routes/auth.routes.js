@@ -17,5 +17,6 @@ router.post(
   isAuth,
   authControllers.postRequestVerificatioEmail
 );
+router.post("/login-as-guest", authControllers.postLoginAsGuest);
 
 export default router;
