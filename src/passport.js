@@ -1,8 +1,10 @@
 import passport from "passport";
 import { Strategy } from "passport-local";
+import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import usersDB from "./data/user.data.js";
 
 export default function passportStrategySetup() {
+  // Local auth
   passport.use(
     new Strategy({ usernameField: "email" }, async (email, password, done) => {
       try {
@@ -22,6 +24,27 @@ export default function passportStrategySetup() {
       }
     })
   );
+
+  // Google auth
+  passport.use(new GoogleStrategy({
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: process.env.GOOGLE_CALLBACK_URL
+  }, async (accessToken, refreshToken, profile, cb) => {
+    // TODO: Modify this whole code block using "UPSERT"
+    // in mongodb
+
+    // Find the existing user with google account
+    const existingUser = await usersDB.findByGoogleID(profile.id);
+    if (existingUser) {
+      return cb(null, existingUser);
+    }
+    // If user does not exist, then
+    // Create a new user with google account
+    const data = {};
+    const newGoogleUser = await usersDB.insert(data);
+    return cb(null, newGoogleUser);
+  }));
 
   passport.serializeUser((user, done) => done(null, user.id));
 
