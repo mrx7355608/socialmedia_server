@@ -137,22 +137,6 @@ const AuthService = ({ usersDB, emailServices }) => {
     return null;
   };
 
-  // Login as guest
-  const createGuestAccount = async () => {
-    // Create a new guest account
-    const guest = {
-      firstname: "Guest",
-      lastname: crypto.randomBytes(5).toString("hex"),
-      email: `Guest-${crypto.randomBytes(5).toString("hex")}@guest.com`,
-      password: crypto.randomBytes(15).toString("hex"),
-      role: "guest",
-      profile_picture: process.env.DEFAULT_PROFILE_PICTURE,
-      cover_picture: process.env.DEFAULT_COVER_PICTURE
-    };
-    const guestAccount = await usersDB.insert(guest);
-    return guestAccount;
-  };
-
   // UTILITY FUNCTIONS
   function filterUnwantedFields(obj) {
     const allowedFields = [
@@ -177,8 +161,7 @@ const AuthService = ({ usersDB, emailServices }) => {
     verifyEmail,
     requestVerificationEmail,
     forgotPassword,
-    resetPassword,
-    createGuestAccount
+    resetPassword
   };
 };
 
